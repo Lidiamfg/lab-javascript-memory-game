@@ -43,9 +43,52 @@ window.addEventListener('load', (event) => {
 
   // Bind the click event of each element to a function
   document.querySelectorAll('.card').forEach((card) => {
+
     card.addEventListener('click', () => {
       // TODO: write some code here
       console.log(`Card clicked: ${card}`);
+
+
+
+      if (memoryGame.pickedCards.length < 2) {
+        card.classList.toggle('turned');
+        memoryGame.pickedCards.push(card);
+        console.log(memoryGame.pairsClicked);
+      }
+
+      if (memoryGame.pickedCards.length === 2) {
+        setTimeout(function () {
+          const firstCard = memoryGame.pickedCards[0];
+          const secondCard = memoryGame.pickedCards[1];
+          console.log(firstCard, secondCard);
+
+          if (memoryGame.checkIfPair(firstCard.getAttribute("data-card-name"), secondCard.getAttribute("data-card-name"))) {
+            firstCard.classList.add('blocked');
+            secondCard.classList.add('blocked');
+            memoryGame.pickedCards = [];
+            document.getElementById("pairs-guessed").innerHTML = memoryGame.pairsGuessed;
+          } else {
+            setTimeout(function () {
+              firstCard.classList.remove('turned');
+              secondCard.classList.remove('turned');
+              memoryGame.pickedCards = [];
+              document.getElementById("pairs-clicked").innerHTML = memoryGame.pairsClicked;
+            }, 200);
+          }
+        }, 500)
+
+      }
+      if (memoryGame.checkIfFinished()) {
+        if (memoryGame.pairsClicked === 12) {
+          alert("You cheated, didn't you?!");
+        }
+        else if (memoryGame.pairsClicked > 12) {
+          alert("Congratulations, you Won!!!");
+        }
+      }
     });
+
   });
 });
+
+
